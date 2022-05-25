@@ -1,0 +1,216 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-1.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Posts {
+  post_id        Int      @id @default(autoincrement()) 
+  createdAt DateTime @default(now())
+  title     String
+  content   String?
+  published Boolean  @default(false)
+  author    Users     @relation(fields: [authorId], references: [user_id]) 
+  authorId  Int    
+}
+
+model Profiles {
+  profile_id     Int     @default(autoincrement()) @id
+  name String
+  user UsersOnProfile[] 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+
+model Users {
+  user_id      Int      @id @default(autoincrement())
+  name    String?
+  email   String   @unique
+  password String
+  wallet String?
+  image String?
+  totalRewards Int @default(0)
+  posts   Posts[]  
+  courses   Courses[] 
+  profile UsersOnProfile[] 
+  enroll UsersOnCourses[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model UsersOnProfile {
+  user Users @relation(fields: [userId], references: [user_id])
+  userId Int
+  profile Profiles @relation(fields: [profileId], references: [profile_id])
+  profileId Int
+  status Boolean? @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())  
+  @@id([userId, profileId])
+}
+
+model Categories {
+  category_id      Int      @id @default(autoincrement())  
+  name    String?
+  status    Boolean? @default(true)
+  image    String?
+  courser   Courses[]  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model Courses {
+  course_id      Int      @id @default(autoincrement())  
+  name    String?
+  description String?
+  price Float?
+  duration Float?  
+  image    String? 
+  video   String?
+  lesson Int?
+  likes   Int?  
+  categoryId Int
+  authorId Int   
+  status    Boolean @default(true)
+  category    Categories     @relation(fields: [categoryId], references: [category_id]) 
+  author    Users     @relation(fields: [authorId], references: [user_id]) 
+  modules Modules?
+  users UsersOnCourses[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())  
+}
+
+model Modules {
+  module_id      Int      @id @default(autoincrement())  
+  name    String?
+  description String?
+  status    Boolean @default(true)
+  image    String?
+  class Int?
+  time  Float?
+  course    Courses     @relation(fields: [courseId], references: [course_id]) 
+  courseId Int
+  lessons Lessons[]
+  test   Tests?
+  modulesOnCourse ModulesOnCourse[] 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model Lessons {
+  lesson_id      Int      @id @default(autoincrement())  
+  name    String?
+  status    Boolean @default(true)
+  image    String?
+  video   String
+  module    Modules     @relation(fields: [moduleId], references: [module_id]) 
+  moduleId Int
+  resources Resources[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model Resources {
+  resource_id      Int      @id @default(autoincrement())  
+  name    String?
+  description String?
+  status    Boolean @default(true)
+  url    String?
+  lesson    Lessons     @relation(fields: [lessonId], references: [lesson_id])   
+  lessonId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+
+//EVALUACIONES
+model Tests {
+  test_id      Int      @id @default(autoincrement())
+  description String?
+  module    Modules     @relation(fields: [moduleId], references: [module_id])   
+  moduleId Int
+  status    Boolean @default(true)
+  questions Questions[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  testAnswers TestAnswers[]
+}
+
+model Questions {
+  question_id      Int      @id @default(autoincrement())
+  text String?
+  order Int
+  status    Boolean @default(true)
+  test    Tests     @relation(fields: [testId], references: [test_id]) 
+  testId Int
+  options Options[]
+  testAnswers TestAnswers[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+ 
+}
+
+model Options {
+  id      Int      @id @default(autoincrement())
+  text String?
+  order Int
+  status    Boolean @default(true)
+  value Boolean @default(false)
+  question    Questions @relation(fields: [questionId], references: [question_id]) 
+  questionId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+//MATRICULAS
+model UsersOnCourses {
+  useroncourse_Id Int @id @default(autoincrement())
+  user Users @relation(fields: [userId], references: [user_id])
+  userId  Int 
+  course Courses @relation(fields: [courseId], references: [course_id])
+  courseId Int
+  progress Int
+  ended Boolean @default(false)
+  grade Float
+  rating Int  @default(0)
+  review String?
+  reward Int  @default(0)  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  modulesOnCourse ModulesOnCourse[]
+  testAnswers       TestAnswers[]
+}
+
+//Modulos que estudiantes estan cursando o cursaron.
+model ModulesOnCourse {
+  useronmodule_id   Int             @id @default(autoincrement())
+  module            Modules         @relation(fields: [module_id], references: [module_id])
+  module_id         Int
+  usersOnCourse     UsersOnCourses  @relation(fields: [userOnCourse_id], references: [useroncourse_Id])
+  userOnCourse_id   Int
+  lessonsCompleted  Int             @default(0)
+  progress          Int             @default(0)
+  isEnded           Boolean         @default(false)
+  grade             Float           @default(0)
+  moduleRating      Int             @default(0)
+  userReview        String?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @default(now())
+}
+
+model TestAnswers {
+  testAnwers_id     Int             @id @default(autoincrement())
+  usersOnCourse     UsersOnCourses  @relation(fields: [userOnCourse_id], references: [useroncourse_Id])
+  userOnCourse_id   Int
+  test              Tests           @relation(fields: [test_id], references: [test_id])
+  test_id           Int
+  question          Questions       @relation(fields: [question_id], references: [question_id])
+  question_id       Int
+  optionSelected    Int
+  value             Boolean
+}

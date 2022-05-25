@@ -1,0 +1,306 @@
+service: ayllu-api-test-v1
+plugins:
+  - serverless-dotenv-plugin
+
+provider:
+  name: aws
+  region: us-east-1
+  runtime: nodejs12.x
+
+functions:
+  status:
+    handler: handlers/status.handler
+    events:
+      - http:
+          method: GET
+          path: /
+  #Seed
+  seed:
+    handler: handlers/seed.handler
+    events:
+      - http:
+          method: GET
+          path: /seed
+  #Users
+  getAllUsers:
+    handler: handlers/users/getUsers.getAllUsers
+    events:
+      - http:
+          method: GET
+          path: /users
+  getUserById:
+    handler: handlers/users/getUsers.getUserById
+    events:
+      - http:
+          method: GET
+          path: /users/getUserById
+  createUser:
+    handler: handlers/users/create-user.handler
+    events:
+      - http:
+          method: POST
+          path: /users
+  updateUser:
+    handler: handlers/users/update-user.handler
+    events:
+      - http:
+          method: POST
+          path: /users/update
+  assingnProfile:
+    handler: handlers/users/assign-profile-user.handler
+    events:
+      - http:
+          method: POST
+          path: /users/assignprofile
+  authUsers:
+    handler: handlers/users/autenticate-user.handler
+    events:
+      - http:
+          method: POST
+          path: /users/valida 
+  getPosts:
+    handler: handlers/posts.handler
+    events:
+      - http:
+          method: GET
+          path: /posts
+  #CATEGORY
+  getCategories:
+    handler: handlers/categories/get-category.handler
+    events:
+      - http:
+          method: GET
+          path: /categories
+  createCategory:
+    handler: handlers/categories/create-category.handler
+    events:
+      - http:
+          method: POST
+          path: /categories
+  #COURSE  
+  getCourseById:
+    handler: handlers/courses/get-course.getCourseById
+    events:
+      - http:
+          method: POST
+          path: /courses/getById
+  
+  getCourseByCategory:
+    handler: handlers/courses/get-course.getCourseByCategory
+    events:
+      - http:
+          method: POST
+          path: /courses/getByCategory
+  getCourseByName:
+    handler: handlers/courses/get-course.getCourseByName
+    events:
+      - http:
+          method: POST
+          path: /courses/getCourseByName
+  getAllCourses:
+    handler: handlers/courses/get-course.getAll
+    events:
+      - http:
+          method: GET
+          path: /courses
+  createCourse:
+    handler: handlers/courses/create-course.handler
+    events:
+      - http:
+          method: POST
+          path: /courses
+  #MODULE 
+  getModuleById:
+    handler: handlers/modules/get-module.getModuleById
+    events:
+    - http:
+        method: POST
+        path: /modules/getById
+  getModuleByCourse:
+    handler: handlers/modules/get-module.getModuleByCourse
+    events:
+      - http:
+          method: POST
+          path: /modules/getByCourse
+  createModule:
+    handler: handlers/modules/create-module.handler
+    events:
+      - http:
+          method: POST
+          path: /modules
+  #TEST
+  getTestByModuleId:
+    handler: handlers/tests/getTests.getTestByModuleId
+    events: 
+      - http:
+          method: POST
+          path: /tests/getTestByModuleId
+  createTest:
+    handler: handlers/tests/createTests.handler
+    events:
+      - http:
+          method: POST
+          path: /tests/createTest
+  updateTest:
+    handler: handlers/tests/updateTest.handler
+    events:
+      - http:
+          method: POST
+          path: /tests/updateTest
+  deleteTest:
+    handler: handlers/tests/deleteTest.handler
+    events:
+      - http:
+          method: POST
+          path: /tests
+  # LESSON
+  getLessonById:
+    handler: handlers/lessons/get-lesson.getLessonById
+    events:
+      - http:
+          method: POST
+          path: /lessons/getById
+  getLessonByModule:
+    handler: handlers/lessons/get-lesson.getLessonByModule
+    events:
+      - http:
+          method: POST
+          path: /lessons/getByModule
+  createLesson:
+    handler: handlers/lessons/create-lesson.handler
+    events:
+      - http:
+          method: POST
+          path: /lessons
+  # Resources
+  getResourcesByLessonId:
+    handler: handlers/resources/get-resource.getResourcesByLessonId
+    events:
+      - http:
+          method: POST
+          path: /resources/getResourcesByLessonId
+  createResource:
+    handler: handlers/resources/create-resource.handler
+    events: 
+      - http:
+          method: POST
+          path: /resources
+  updateResources:
+    handler: handlers/resources/updateResources.handler
+    events:
+      - http:
+          method: POST
+          path: /resources/updateResources
+  deleteResource:
+    handler: handlers/resources/deleteResource.handler
+    events:
+      - http:
+          method: GET
+          path: /resources/deleteResource
+  #UsersOnCourses 
+  getAllUsersOnCourses:
+    handler: handlers/usersOnCourses/getUsersOnCourses.getAllUsersOnCourses
+    events:
+      - http: 
+          method: GET
+          path: /usersOnCourses
+  getUserOnCourseByName:
+    handler: handlers/usersOnCourses/getUsersOnCourses.getUserOnCourseByName
+    events:
+      - http:
+          method: GET
+          path: /usersOnCourses/getUserOnCourseById
+  getCoursesActive:
+    handler: handlers/usersOnCourses/getUsersOnCourses.getCoursesActive
+    events:
+      - http:
+          method: GET
+          path: /usersOnCourses/coursesActive
+  getCoursesCompleted:
+    handler: handlers/usersOnCourses/getUsersOnCourses.getCoursesCompleted
+    events:
+      - http:
+          method: GET
+          path: /usersOnCourses/coursesCompleted
+  getUserCoursesActive:
+    handler: handlers/usersOnCourses/getUsersOnCourses.getUserCoursesActive
+    events:
+      - http:
+          method: GET
+          path: /usersOnCourses/userCoursesActive
+  getUserCoursesCompleted:
+    handler: handlers/usersOnCourses/getUsersOnCourses.getUserCoursesCompleted
+    events:
+      - http:
+          method: GET
+          path: /usersOnCourses/userCoursesCompleted
+  createUserOnCourse:
+    handler: handlers/usersOnCourses/createUserOnCourse.handler
+    events:
+      - http:
+          method: POST
+          path: /usersOnCourses
+  updateUserOnCourse:
+    handler: handlers/usersOnCourses/updateUserOnCourse.handler
+    events:
+      - http:
+          method: POST
+          path: /usersOnCourses/update
+  deleteUserOnCourse:
+    handler: handlers/usersOnCourses/deleteUserOnCourse.handler
+    events:
+      - http:
+          method: GET
+          path: /usersOnCourses/delete
+  #ModulesOnCourse
+  getAllModulesOnCourse:
+    handler: handlers/modulesOnCourse/getModulesOnCourse.getAllModulesOnCourse
+    events:
+      - http:
+          method: GET
+          path: /modulesOnCourse
+  getModuleOnCourseById:
+    handler: handlers/modulesOnCourse/getModulesOnCourse.getModuleOnCourseById
+    events:
+      - http:
+          method: GET
+          path: /modulesOnCourse/getModuleOnCourseById
+  getModulesCompleted:
+    handler: handlers/modulesOnCourse/getModulesOnCourse.getModulesCompleted
+    events:
+      - http:
+          method: GET
+          path: /modulesOnCourse/modulesCompleted
+  createModuleOnCourse:
+    handler: handlers/modulesOnCourse/createModuleOnCourse.handler
+    events:
+      - http:
+          method: POST
+          path: /modulesOnCourse
+  updateModuleOnCouse:
+    handler: handlers/modulesOnCourse/updateModuleOnCourse.handler
+    events:
+      - http:
+          method: POST
+          path: /modulesOnCourse/update
+  #TestAnswers
+  getUserTestAnswers:
+    handler: handlers/testAnswers/getUserTestAnswers.handler
+    events:
+      - http:
+          method: GET
+          path: /testAnswers
+  createUserTestAnswers:
+    handler: handlers/testAnswers/createUserTestAnswers.handler
+    events:
+      - http:
+          method: POST
+          path: /testAnswers
+
+# only include the Prisma binary required on AWS Lambda while packaging
+package:
+  patterns:
+    - '!node_modules/.prisma/client/libquery_engine-*'
+    - 'node_modules/.prisma/client/libquery_engine-rhel-*'
+    - '!node_modules/prisma/libquery_engine-*'
+    - '!node_modules/@prisma/engines/**'
