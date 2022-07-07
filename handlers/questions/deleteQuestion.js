@@ -2,14 +2,14 @@ const { PrismaClient } = require('@prisma/client')
 
 exports.handler = async(event, context) => {
     const prisma = new PrismaClient()
-    const data = event.queryStringParameters && event.queryStringParameters.resource_id;
+    const data = event.queryStringParameters && event.queryStringParameters.question_id;
 
-    let resourceId = parseInt(data)
-    
+    let questionId = parseInt(data)
+
     try {
-        const deletedResource = await prisma.Resources.delete({
+        const deletedQuestion = await prisma.questions.delete({
             where: {
-                resource_id: resourceId,
+                question_id: questionId,
                 status: true
             }
         })
@@ -17,9 +17,8 @@ exports.handler = async(event, context) => {
         return {
             statusCode: 200,
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(deletedResource) 
+            body: JSON.stringify(deletedQuestion) 
         }
-
     } catch (error) {
         console.log(error)
 
@@ -32,4 +31,4 @@ exports.handler = async(event, context) => {
         await prisma.$disconnect()
     }
 
-} 
+}

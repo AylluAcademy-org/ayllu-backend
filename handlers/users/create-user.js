@@ -8,14 +8,7 @@ exports.handler = async (event, context, callback) => {
   try {
     const data = JSON.parse(event.body)
     const createdUser = await prisma.Users.create({ data })
-
-    const asignarRol = await prisma.UsersOnProfile.create({
-      data:{
-        userId: createdUser.id,
-        profileId: 2,
-      }
-     })
-     
+    
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },

@@ -1,17 +1,16 @@
 const { Prisma, PrismaClient } = require('@prisma/client')
   
 exports.handler = async (event, context, callback) => {
-    const prisma = new PrismaClient()
+    const prisma = new PrismaClient() 
+    const data = JSON.parse(event.body)
 
     try {
-        const data = JSON.parse(event.body)
-
-        const createUserOnCourse = await prisma.usersOnCourses.create({ data })
-
+        
+        const createQuestion = await prisma.questions.create({ data })
         return {
             statusCode: 200,
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(createUserOnCourse)
+            body: JSON.stringify(createQuestion)
           }
 
     } catch (error) {
@@ -22,5 +21,8 @@ exports.handler = async (event, context, callback) => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(error)
         }
+    }finally {
+        await prisma.$disconnect()
     }
+
 }

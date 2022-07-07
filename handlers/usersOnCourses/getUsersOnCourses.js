@@ -28,20 +28,27 @@ module.exports.getAllUsersOnCourses = async() => {
     
 }
 
-//Not working yet
-module.exports.getUserOnCourseByName = async(event) => {
+module.exports.getUserOnCourseByCourseId = async(event) => {
     const prisma = new PrismaClient();
-    const data = event.queryStringParameters && event.queryStringParameters.name;
+    const data = event.queryStringParameters && event.queryStringParameters.courseId;
+
+    let course_id = parseInt(data);
 
     try {
-        const course = await prisma.usersOnCourses.findUnique({
+        const course = await prisma.usersOnCourses.findMany({
             where: {
+                courseId: course_id,
+                ended: false
+            },
+            include: {
                 course: {
-                    some: {
-                        name: data
+                    select: {
+                        course_id: true,
+                        name: true,
+                        description: true
                     }
                 }
-            },
+            }
         })
 
         return {
@@ -118,10 +125,8 @@ module.exports.getCoursesCompleted = async() => {
     }
 }
 
-//Not working yet
 module.exports.getUserCoursesActive = async(event) => {
     const prisma = new PrismaClient();
-    //const data = JSON.parse(event.body);
     const data = event.queryStringParameters && event.queryStringParameters.user_id;
 
     let user_Id = parseInt(data)
@@ -132,13 +137,16 @@ module.exports.getUserCoursesActive = async(event) => {
                 userId: user_Id,
                 ended: false
             },
-            // select: {
-            //     useroncourse_Id: true,
-            //     userId: true,
-            //     courseId: true,
-            //     progress: true,
-
-            // }
+            include: {
+                modulesOnCourse: {
+                    select: {
+                        module_id: true,
+                        lessonsCompleted: true,
+                        isEnded: true,
+                        grade: true
+                    }
+                }
+            }
         })
 
         return {
@@ -160,10 +168,8 @@ module.exports.getUserCoursesActive = async(event) => {
     }
 }
 
-//Not working yet
 module.exports.getUserCoursesCompleted = async(event) => {
     const prisma = new PrismaClient();
-    //const data = JSON.parse(event.body);
 
     const data = event.queryStringParameters && event.queryStringParameters.user_id;
 
@@ -175,9 +181,16 @@ module.exports.getUserCoursesCompleted = async(event) => {
                 userId: user_Id,
                 ended: true
             },
-            // select: {
-                
-            // }
+            include: {
+                modulesOnCourse: {
+                    select: {
+                        module_id: true,
+                        lessonsCompleted: true,
+                        isEnded: true,
+                        grade: true
+                    }
+                }
+            }
         })
 
         return {

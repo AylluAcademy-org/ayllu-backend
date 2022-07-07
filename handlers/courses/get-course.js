@@ -8,10 +8,10 @@ module.exports.getCourseById= async (event, context, callback) => {
   let courseId = parseInt(data)
 
   const course = await prisma.Courses.findUnique({    
-        where:{
-            course_id:courseId
-        }            
-      })
+      where:{
+          course_id:courseId
+      }            
+  })
 
   console.log(course)
 
@@ -41,9 +41,10 @@ module.exports.getCourseByCategory= async (event, context, callback) => {
 module.exports.getCourseByName = async(event) => {
   const data = JSON.parse(event.body);
 
-  const course = await prisma.Courses.findUnique({
+  const course = await prisma.courses.findFirst({
     where: {
-      name: data.name
+      name: data.name,
+      status: true
     }
   })
 

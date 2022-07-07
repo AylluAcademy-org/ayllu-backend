@@ -1,15 +1,13 @@
 const { PrismaClient } = require('@prisma/client')
 
-exports.handler = async(event, context) => {
+module.exports.getOptionsByQuestion = async(event) => {
     const prisma = new PrismaClient()
-    const data = event.queryStringParameters && event.queryStringParameters.resource_id;
+    const data = JSON.parse(event.body)
 
-    let resourceId = parseInt(data)
-    
     try {
-        const deletedResource = await prisma.Resources.delete({
+        const questionOptions = await prisma.options.findMany({
             where: {
-                resource_id: resourceId,
+                questionId: data.questionId,
                 status: true
             }
         })
@@ -17,7 +15,7 @@ exports.handler = async(event, context) => {
         return {
             statusCode: 200,
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(deletedResource) 
+            body: JSON.stringify(questionOptions)
         }
 
     } catch (error) {
@@ -27,9 +25,9 @@ exports.handler = async(event, context) => {
             statusCode: 500,
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(error)
-          }
+        }
     }finally{
-        await prisma.$disconnect()
+        await prisma.$disconnect();
     }
-
-} 
+    
+}

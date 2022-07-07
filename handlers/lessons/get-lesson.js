@@ -38,7 +38,6 @@ module.exports.getLessonByModule= async (event, context, callback) => {
         include: {
           resources: {  
             select: {
-              resource_id: true,
               name: true,
               description: true,
               url: true

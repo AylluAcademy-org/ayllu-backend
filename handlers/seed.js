@@ -4,30 +4,30 @@ const prisma = new PrismaClient()
 exports.handler = async (event, context, callback) => {
   try {
 
-    const createdCategory1 = await prisma.category.create({
+    const createdCategory1 = await prisma.Categories.create({
       data: seedCategory1,
     })
-    const createdCategory2 = await prisma.category.create({
+    const createdCategory2 = await prisma.Categories.create({
       data: seedCategory2,
     })
 
-    const createdCategory3 = await prisma.category.create({
+    const createdCategory3 = await prisma.Categories.create({
       data: seedCategory3,
     })
 
-    const createdCategory4 = await prisma.category.create({
+    const createdCategory4 = await prisma.Categories.create({
       data: seedCategory4,
     })
 
-    const createdProfile1 = await prisma.category.create({
+    const createdProfile1 = await prisma.Categories.create({
       data: seedProfile1,
     })
 
-    const createdProfile2 = await prisma.category.create({
+    const createdProfile2 = await prisma.Categories.create({
       data: seedProfile3,
     })
 
-    const createdProfile3 = await prisma.category.create({
+    const createdProfile3 = await prisma.Categories.create({
       data: seedProfile3,
     })
 

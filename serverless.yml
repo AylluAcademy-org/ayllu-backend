@@ -1,3 +1,5 @@
+org: jmarvinh
+app: ayllu-api-test-v1
 service: ayllu-api-test-v1
 plugins:
   - serverless-dotenv-plugin
@@ -6,6 +8,8 @@ provider:
   name: aws
   region: us-east-1
   runtime: nodejs12.x
+  # versionFunctions: false
+
 
 functions:
   status:
@@ -13,7 +17,7 @@ functions:
     events:
       - http:
           method: GET
-          path: /
+          path: /status
   #Seed
   seed:
     handler: handlers/seed.handler
@@ -21,13 +25,20 @@ functions:
       - http:
           method: GET
           path: /seed
+  #Auth
+  getAccessToken:
+    handler: handlers/auth/getAccessToken.handler
+    events:
+      - http:
+          method: GET
+          path: /auth/getAccessToken
   #Users
   getAllUsers:
     handler: handlers/users/getUsers.getAllUsers
     events:
       - http:
           method: GET
-          path: /users
+          path: /users/getAllUsers
   getUserById:
     handler: handlers/users/getUsers.getUserById
     events:
@@ -39,25 +50,25 @@ functions:
     events:
       - http:
           method: POST
-          path: /users
+          path: /users/createUser
   updateUser:
     handler: handlers/users/update-user.handler
     events:
       - http:
           method: POST
-          path: /users/update
+          path: /users/updateUser
   assingnProfile:
     handler: handlers/users/assign-profile-user.handler
     events:
       - http:
           method: POST
-          path: /users/assignprofile
+          path: /users/assignProfile
   authUsers:
     handler: handlers/users/autenticate-user.handler
     events:
       - http:
           method: POST
-          path: /users/valida 
+          path: /users/validarUser
   getPosts:
     handler: handlers/posts.handler
     events:
@@ -82,9 +93,8 @@ functions:
     handler: handlers/courses/get-course.getCourseById
     events:
       - http:
-          method: POST
+          method: GET
           path: /courses/getById
-  
   getCourseByCategory:
     handler: handlers/courses/get-course.getCourseByCategory
     events:
@@ -128,6 +138,18 @@ functions:
       - http:
           method: POST
           path: /modules
+  updateModule:
+    handler: handlers/modules/updateModule.handler
+    events: 
+      - http:
+          method: POST
+          path: /modules/updateModule
+  deleteModule:
+    handler: handlers/modules/deleteModule.handler
+    events:
+      - http:
+          method: GET
+          path: /modules/deleteModule
   #TEST
   getTestByModuleId:
     handler: handlers/tests/getTests.getTestByModuleId
@@ -151,8 +173,64 @@ functions:
     handler: handlers/tests/deleteTest.handler
     events:
       - http:
+          method: GET
+          path: /tests/deleteTest
+  #Questions
+  getQuestionsByTest:
+    handler: handlers/questions/getQuestions.getQuestionsByTest
+    events:
+      - http:
           method: POST
-          path: /tests
+          path: /questions/getQuestionsByTest
+  getQuestionByOrderId:
+    handler: handlers/questions/getQuestions.getQuestionByOrderId
+    events:
+      - http:
+          method: GET
+          path: /questions/getQuestionsByOrder
+  createQuestion: 
+    handler: handlers/questions/createQuestion.handler
+    events: 
+      - http:
+          method: POST
+          path: /questions/createQuestion
+  updateQuestion:
+    handler: handlers/questions/updateQuestion.handler
+    events:
+      - http:
+          method: POST
+          path: /questions/updateQuestion
+  deleteQuestion:
+    handler: handlers/questions/deleteQuestion.handler
+    events:
+      - http:
+          method: GET
+          path: /questions/deleteQuestion
+  #OPTIONS
+  getOptionsByQuestion:
+    handler: handlers/options/getOptions.getOptionsByQuestion
+    events:
+      - http:
+          method: POST
+          path: /options/getOptionsByQuestion
+  createOption:
+    handler: handlers/options/createOption.handler
+    events:
+      - http:
+          method: POST
+          path: /options/createOption
+  updateOption:
+    handler: handlers/options/updateOption.handler
+    events:
+      - http:
+          method: POST
+          path: /options/updateOption
+  deleteOption:
+    handler: handlers/options/deleteOption.handler
+    events: 
+      - http:
+          method: GET
+          path: /options/deleteOption
   # LESSON
   getLessonById:
     handler: handlers/lessons/get-lesson.getLessonById
@@ -204,12 +282,12 @@ functions:
       - http: 
           method: GET
           path: /usersOnCourses
-  getUserOnCourseByName:
-    handler: handlers/usersOnCourses/getUsersOnCourses.getUserOnCourseByName
+  getUserOnCourseByCourseId:
+    handler: handlers/usersOnCourses/getUsersOnCourses.getUserOnCourseByCourseId
     events:
       - http:
           method: GET
-          path: /usersOnCourses/getUserOnCourseById
+          path: /usersOnCourses/getUserOnCourseByCourseId
   getCoursesActive:
     handler: handlers/usersOnCourses/getUsersOnCourses.getCoursesActive
     events:
@@ -263,13 +341,13 @@ functions:
     handler: handlers/modulesOnCourse/getModulesOnCourse.getModuleOnCourseById
     events:
       - http:
-          method: GET
+          method: POST
           path: /modulesOnCourse/getModuleOnCourseById
   getModulesCompleted:
     handler: handlers/modulesOnCourse/getModulesOnCourse.getModulesCompleted
     events:
       - http:
-          method: GET
+          method: POST
           path: /modulesOnCourse/modulesCompleted
   createModuleOnCourse:
     handler: handlers/modulesOnCourse/createModuleOnCourse.handler
@@ -283,19 +361,37 @@ functions:
       - http:
           method: POST
           path: /modulesOnCourse/update
-  #TestAnswers
-  getUserTestAnswers:
-    handler: handlers/testAnswers/getUserTestAnswers.handler
+  getModulesAverageGrade:
+    handler: handlers/modulesOnCourse/getModulesOnCourse.getModulesAverageGrade
     events:
       - http:
-          method: GET
-          path: /testAnswers
+          method: POST
+          path: /modulesOnCourse/getModulesAverageGrade
+  #TestAnswers
+  getUserTestAnswers:
+    handler: handlers/testAnswers/userTestAnswers.getUserTestAnswers
+    events:
+      - http:
+          method: POST
+          path: /testAnswers/getUserTestAnswers
   createUserTestAnswers:
     handler: handlers/testAnswers/createUserTestAnswers.handler
     events:
       - http:
           method: POST
-          path: /testAnswers
+          path: /testAnswers/createUserTestAnswers
+  updateUserTestAnswers:
+    handler: handlers/testAnswers/updateUserTestAnswers.handler
+    events:
+      - http:
+          method: POST
+          path: /testAnswers/updateUserTestAnswers
+  getTestGrade:
+    handler: handlers/testAnswers/userTestAnswers.getTestGrade
+    events:
+      - http:
+          method: POST
+          path: /testAnswers/getTestGrade
 
 # only include the Prisma binary required on AWS Lambda while packaging
 package:

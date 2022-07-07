@@ -5,31 +5,25 @@ const {
   const prisma = new PrismaClient()
   
   exports.handler = async (event, context, callback) => {
+    const data = JSON.parse(event.body)
+
     try {
-      const data = JSON.parse(event.body)
       const createdModule = await prisma.Modules.create({ data })     
   
       return {
         statusCode: 200,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(createdModule)
-      }
-    } catch (e) {
-      if (e instanceof Prisma.PrismaClientRequestError) {
-        if (e.code === 'P2002') {
-          return {
-            statusCode: 409,
+      } 
+
+    } catch (error) {
+      console.log(error)
+
+        return {
+            statusCode: 500,
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              error: 'Le módulo ya existe'
-            })
-          }
+            body: JSON.stringify(error)
         }
-      }
-  
-      console.error(e)
-      return {
-        statusCode: 500}
     }
   }
   

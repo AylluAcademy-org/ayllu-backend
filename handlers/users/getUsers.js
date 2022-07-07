@@ -7,8 +7,6 @@ module.exports.getAllUsers = async (event, context, callback) => {
       include: { profile: true }
     })
     
-    console.log(users)
-
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
@@ -30,12 +28,13 @@ module.exports.getUserById = async (event, context, callback) => {
 
   let userId = parseInt(data)
 
+  //Get user by Id
   const user = await prisma.Users.findUnique({
     where: {
       user_id: userId
     }
   })
-
+  
   return {
     statusCode: 200,
     headers: { 'Content-Type': 'application/json' },

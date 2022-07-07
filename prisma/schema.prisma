@@ -79,7 +79,7 @@ model Courses {
   status    Boolean @default(true)
   category    Categories     @relation(fields: [categoryId], references: [category_id]) 
   author    Users     @relation(fields: [authorId], references: [user_id]) 
-  modules Modules?
+  modules Modules[]
   users UsersOnCourses[]
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())  
@@ -93,10 +93,10 @@ model Modules {
   image    String?
   class Int?
   time  Float?
-  course    Courses     @relation(fields: [courseId], references: [course_id]) 
-  courseId Int
+  course    Courses?     @relation(fields: [courseId], references: [course_id]) 
+  courseId Int?
   lessons Lessons[]
-  test   Tests?
+  test   Tests[]
   modulesOnCourse ModulesOnCourse[] 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -108,8 +108,8 @@ model Lessons {
   status    Boolean @default(true)
   image    String?
   video   String
-  module    Modules     @relation(fields: [moduleId], references: [module_id]) 
-  moduleId Int
+  module    Modules?     @relation(fields: [moduleId], references: [module_id]) 
+  moduleId Int?
   resources Resources[]
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -121,8 +121,8 @@ model Resources {
   description String?
   status    Boolean @default(true)
   url    String?
-  lesson    Lessons     @relation(fields: [lessonId], references: [lesson_id])   
-  lessonId Int
+  lesson    Lessons?     @relation(fields: [lessonId], references: [lesson_id])   
+  lessonId Int?
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 }
@@ -146,8 +146,8 @@ model Questions {
   text String?
   order Int
   status    Boolean @default(true)
-  test    Tests     @relation(fields: [testId], references: [test_id]) 
-  testId Int
+  test    Tests?     @relation(fields: [testId], references: [test_id]) 
+  testId Int?
   options Options[]
   testAnswers TestAnswers[]
   createdAt DateTime @default(now())
@@ -161,8 +161,8 @@ model Options {
   order Int
   status    Boolean @default(true)
   value Boolean @default(false)
-  question    Questions @relation(fields: [questionId], references: [question_id]) 
-  questionId Int
+  question    Questions? @relation(fields: [questionId], references: [question_id]) 
+  questionId Int?
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 }
@@ -170,11 +170,11 @@ model Options {
 //MATRICULAS
 model UsersOnCourses {
   useroncourse_Id Int @id @default(autoincrement())
-  user Users @relation(fields: [userId], references: [user_id])
-  userId  Int 
-  course Courses @relation(fields: [courseId], references: [course_id])
-  courseId Int
-  progress Int
+  user Users? @relation(fields: [userId], references: [user_id])
+  userId  Int? 
+  course Courses? @relation(fields: [courseId], references: [course_id])
+  courseId Int?
+  progress Float
   ended Boolean @default(false)
   grade Float
   rating Int  @default(0)
@@ -189,10 +189,10 @@ model UsersOnCourses {
 //Modulos que estudiantes estan cursando o cursaron.
 model ModulesOnCourse {
   useronmodule_id   Int             @id @default(autoincrement())
-  module            Modules         @relation(fields: [module_id], references: [module_id])
-  module_id         Int
-  usersOnCourse     UsersOnCourses  @relation(fields: [userOnCourse_id], references: [useroncourse_Id])
-  userOnCourse_id   Int
+  module            Modules?         @relation(fields: [module_id], references: [module_id])
+  module_id         Int?
+  usersOnCourse     UsersOnCourses?  @relation(fields: [userOnCourse_id], references: [useroncourse_Id])
+  userOnCourse_id   Int?
   lessonsCompleted  Int             @default(0)
   progress          Int             @default(0)
   isEnded           Boolean         @default(false)
@@ -205,12 +205,12 @@ model ModulesOnCourse {
 
 model TestAnswers {
   testAnwers_id     Int             @id @default(autoincrement())
-  usersOnCourse     UsersOnCourses  @relation(fields: [userOnCourse_id], references: [useroncourse_Id])
-  userOnCourse_id   Int
-  test              Tests           @relation(fields: [test_id], references: [test_id])
-  test_id           Int
-  question          Questions       @relation(fields: [question_id], references: [question_id])
-  question_id       Int
+  usersOnCourse     UsersOnCourses?  @relation(fields: [userOnCourse_id], references: [useroncourse_Id])
+  userOnCourse_id   Int?
+  test              Tests?           @relation(fields: [test_id], references: [test_id])
+  test_id           Int?
+  question          Questions?       @relation(fields: [question_id], references: [question_id])
+  question_id       Int?
   optionSelected    Int
-  value             Boolean
+  value             Boolean         @default(false)
 }

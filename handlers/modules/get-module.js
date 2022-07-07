@@ -1,7 +1,6 @@
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 
-
 module.exports.getModuleById= async (event, context, callback) => {
   const data = JSON.parse(event.body)
   const module = await prisma.Modules.findUnique({    
@@ -25,22 +24,22 @@ module.exports.getModuleById= async (event, context, callback) => {
   } 
 }
 
-//Not working yet
 module.exports.getModuleByCourse= async (event, context, callback) => {
   const data = JSON.parse(event.body)
+
   const modules = await prisma.Modules.findMany({    
     where:{
-        courseId:data.courseId,
+        courseId: data.courseId,
     }, 
-    // include:{
-    //   lessons:
-    //   {
-    //     select:{
-    //       lesson_id: true,
-    //       name: true,
-    //     }
-    //   },
-    // }            
+    include:{
+      lessons:
+      {
+        select:{
+          lesson_id: true,
+          name: true,
+        }
+      },
+    }            
   })
 
   return {
