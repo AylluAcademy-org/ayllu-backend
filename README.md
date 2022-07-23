@@ -47,4 +47,4 @@ The Serverless configuration file includes a package pattern that excludes all P
 >>>>>>> e97be60 (Initial Commit)
 
 ## Postman documentation to test the Endpoints
-https://documenter.getpostman.com/view/20934581/Uz5CLxW4
+https://documenter.getpostman.com/view/20934581/UzQvrjYs
