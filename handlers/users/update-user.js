@@ -1,3 +1,4 @@
+require("dotenv").config()
 const { Prisma, PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
   
@@ -29,7 +30,11 @@ exports.handler = async (event, context, callback) => {
 
     return {
       statusCode: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+        "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+        "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+      },
       body: JSON.stringify(updateUser)
     }
   } catch (e) {
@@ -37,7 +42,11 @@ exports.handler = async (event, context, callback) => {
       if (e.code === 'P2002') {
         return {
           statusCode: 409,
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+            "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+            "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+          },
           body: JSON.stringify({
             error: 'A user with this email already exists'
           })

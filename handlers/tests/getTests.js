@@ -1,3 +1,4 @@
+require("dotenv").config()
 const { PrismaClient } = require("@prisma/client")
 
 module.exports.getTestByModuleId = async(event) => {
@@ -23,7 +24,11 @@ module.exports.getTestByModuleId = async(event) => {
         
         return {
             statusCode: 200,
-            headers: {'Content-Type': 'application/json'},
+            headers: { 
+                "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+                "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+                "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+            },
             body: JSON.stringify(moduleTest)
         }
 
@@ -32,7 +37,11 @@ module.exports.getTestByModuleId = async(event) => {
 
         return {
             statusCode: 500,
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+                "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+                "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+            },
             body: JSON.stringify(error)
         }
     }finally{

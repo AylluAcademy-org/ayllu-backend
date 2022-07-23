@@ -1,3 +1,4 @@
+require("dotenv").config()
 const { Prisma, PrismaClient } = require('@prisma/client')
   
 exports.handler = async (event, context, callback) => {
@@ -9,7 +10,11 @@ exports.handler = async (event, context, callback) => {
         const createQuestion = await prisma.questions.create({ data })
         return {
             statusCode: 200,
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+                "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+                "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+            },
             body: JSON.stringify(createQuestion)
           }
 
@@ -18,7 +23,11 @@ exports.handler = async (event, context, callback) => {
 
         return {
             statusCode: 500,
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+                "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+                "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+            },
             body: JSON.stringify(error)
         }
     }finally {

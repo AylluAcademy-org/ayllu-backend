@@ -1,3 +1,4 @@
+require("dotenv").config()
 const { PrismaClient } = require("@prisma/client")
 
 //Handler to get the answers (records from testAnswers table) given by a user in a specific test. 
@@ -16,7 +17,11 @@ module.exports.getUserTestAnswers = async(event) => {
 
         return {
             statusCode: 200,
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+                "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+                "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+            },
             body: JSON.stringify(userTestAnswers)
         }
 
@@ -25,7 +30,11 @@ module.exports.getUserTestAnswers = async(event) => {
         
         return {
         statusCode: 500,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+            "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+            "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+            "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+        },
         body: JSON.stringify(error)
         }
     }finally {
@@ -122,7 +131,11 @@ module.exports.getTestGrade = async(event) => {
 
         return {
             statusCode: 200,
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+                "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+                "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+            },
             body: JSON.stringify(moduleEnded)
         }
 
@@ -131,7 +144,11 @@ module.exports.getTestGrade = async(event) => {
         
         return {
         statusCode: 500,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+            "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+            "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+            "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+        },
         body: JSON.stringify(error)
         }
     }finally {

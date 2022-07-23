@@ -1,6 +1,6 @@
+require("dotenv").config()
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
-
 
 module.exports.getLessonById= async (event, context, callback) => {
   const data = JSON.parse(event.body)
@@ -23,7 +23,11 @@ module.exports.getLessonById= async (event, context, callback) => {
       })
   return {
     statusCode: 200,
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 
+      "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+      "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+      "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+    },
     body: JSON.stringify(lesson)
   } 
 }
@@ -47,7 +51,11 @@ module.exports.getLessonByModule= async (event, context, callback) => {
       })
   return {
     statusCode: 200,
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 
+      "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+      "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+      "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+    },
     body: JSON.stringify(lessons)
   } 
 }

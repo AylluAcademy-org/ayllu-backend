@@ -1,6 +1,6 @@
 org: jmarvinh
-app: ayllu-api-test-v1
-service: ayllu-api-test-v1
+app: ayllu-api-test-v2
+service: ayllu-api-test-v2
 plugins:
   - serverless-dotenv-plugin
 

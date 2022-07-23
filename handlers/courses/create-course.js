@@ -1,3 +1,4 @@
+require("dotenv").config()
 const {
     Prisma,
     PrismaClient
@@ -11,15 +12,23 @@ const {
   
       return {
         statusCode: 200,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+          "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+          "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+        },
         body: JSON.stringify(createdCourse)
       }
     } catch (e) {
-      if (e instanceof Prisma.PrismaClientRequestError) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
           return {
             statusCode: 409,
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+              "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+              "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+              "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+            },
             body: JSON.stringify({
               error: 'Datos duplicados'
             })

@@ -1,3 +1,4 @@
+require("dotenv").config()
 const {
     Prisma,
     PrismaClient
@@ -11,24 +12,25 @@ const {
   
       return {
         statusCode: 200,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+          "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+          "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+        },
         body: JSON.stringify(createdCategory)
       }
     } catch (e) {
-      if (e instanceof Prisma.PrismaClientRequestError) {
-        if (e.code === 'P2002') {
-          return {
-            statusCode: 409,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              error: 'A user with this email already exists'
-            })
-          }
-        }
-      }
-  
+
       console.error(e)
-      return { statusCode: 500 }
+      return { 
+        statusCode: 500,
+        headers: { 
+          "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+          "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+          "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+        },
+        body: JSON.stringify(e)
+      }
     }
   }
   

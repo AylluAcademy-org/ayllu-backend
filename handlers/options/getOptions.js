@@ -1,3 +1,4 @@
+require("dotenv").config()
 const { PrismaClient } = require('@prisma/client')
 
 module.exports.getOptionsByQuestion = async(event) => {
@@ -14,7 +15,11 @@ module.exports.getOptionsByQuestion = async(event) => {
 
         return {
             statusCode: 200,
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+                "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+                "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+            },
             body: JSON.stringify(questionOptions)
         }
 
@@ -23,7 +28,11 @@ module.exports.getOptionsByQuestion = async(event) => {
 
         return {
             statusCode: 500,
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+                "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+                "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+            },
             body: JSON.stringify(error)
         }
     }finally{

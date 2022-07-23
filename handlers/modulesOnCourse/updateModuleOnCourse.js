@@ -1,3 +1,4 @@
+require("dotenv").config()
 const { PrismaClient } = require("@prisma/client")
 
 exports.handler = async(event) => {
@@ -46,7 +47,11 @@ exports.handler = async(event) => {
 
         return {
             statusCode: 200,
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+                "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+                "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+            },
             body: JSON.stringify(updatedModuleOnCourse)
         }
         
@@ -55,7 +60,11 @@ exports.handler = async(event) => {
             if (e.code === 'P2002') {
               return {
                 statusCode: 409,
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+                    "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+                    "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+                },
                 body: JSON.stringify({
                   error: 'Module update cannot be done, some data already exists'
                 })

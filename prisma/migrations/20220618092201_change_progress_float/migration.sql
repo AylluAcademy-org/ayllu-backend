@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE "UsersOnCourses" ALTER COLUMN "progress" SET DATA TYPE DOUBLE PRECISION;

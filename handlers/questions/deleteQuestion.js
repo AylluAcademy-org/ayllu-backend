@@ -1,3 +1,4 @@
+require("dotenv").config()
 const { PrismaClient } = require('@prisma/client')
 
 exports.handler = async(event, context) => {
@@ -16,7 +17,11 @@ exports.handler = async(event, context) => {
 
         return {
             statusCode: 200,
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+                "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+                "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+            },
             body: JSON.stringify(deletedQuestion) 
         }
     } catch (error) {
@@ -24,7 +29,11 @@ exports.handler = async(event, context) => {
 
         return {
             statusCode: 500,
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+                "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+                "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+            },
             body: JSON.stringify(error)
           }
     }finally{

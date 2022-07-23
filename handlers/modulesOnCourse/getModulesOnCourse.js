@@ -1,3 +1,4 @@
+require("dotenv").config()
 const { PrismaClient } = require("@prisma/client")
 
 module.exports.getAllModulesOnCourse = async(event) => {
@@ -9,7 +10,11 @@ module.exports.getAllModulesOnCourse = async(event) => {
 
         return {
             statusCode: 200,
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+                "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+                "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+            },
             body: JSON.stringify(allCourseModules)
         }
 
@@ -18,7 +23,11 @@ module.exports.getAllModulesOnCourse = async(event) => {
         
         return {
         statusCode: 500,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+            "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+            "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+            "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+        },
         body: JSON.stringify(error)
         }
     }finally {
@@ -42,7 +51,11 @@ module.exports.getModuleOnCourseById = async(event) => {
 
         return {
             statusCode: 200,
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+                "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+                "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+            },
             body: JSON.stringify(moduleOnCourseByUserId)
         }
     } catch (error) {
@@ -50,7 +63,11 @@ module.exports.getModuleOnCourseById = async(event) => {
         
         return {
         statusCode: 500,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+            "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+            "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+            "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+        },
         body: JSON.stringify(error)
         }
     }finally {
@@ -73,7 +90,11 @@ module.exports.getModulesCompleted = async(event) => {
 
         return {
             statusCode: 200,
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+                "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+                "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+            },
             body: JSON.stringify(modulesCompletedByUser)
         }
     } catch (error) {
@@ -81,7 +102,11 @@ module.exports.getModulesCompleted = async(event) => {
         
         return {
         statusCode: 500,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+            "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+            "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+            "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+        },
         body: JSON.stringify(error)
         }
     }finally {
@@ -181,7 +206,11 @@ module.exports.getModulesAverageGrade = async(event) => {
 
         return {
             statusCode: 200,
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+                "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+                "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+            },
             body: JSON.stringify(averageGrade)
         }
 
@@ -189,9 +218,13 @@ module.exports.getModulesAverageGrade = async(event) => {
         console.error(error)
         
         return {
-        statusCode: 500,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(error)
+            statusCode: 500,
+            headers: { 
+                "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+                "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+                "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+            },
+            body: JSON.stringify(error)
         }
     }finally {
         await prisma.$disconnect()

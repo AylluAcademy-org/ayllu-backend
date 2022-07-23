@@ -1,6 +1,6 @@
+require("dotenv").config()
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
-
 
 module.exports.getCourseById= async (event, context, callback) => {
   const data = event.queryStringParameters && event.queryStringParameters.course_id
@@ -17,7 +17,11 @@ module.exports.getCourseById= async (event, context, callback) => {
 
   return {
     statusCode: 200,
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 
+      "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+      "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+      "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+    },
     body: JSON.stringify(course)
   } 
 }
@@ -33,7 +37,11 @@ module.exports.getCourseByCategory= async (event, context, callback) => {
       })
   return {
     statusCode: 200,
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 
+      "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+      "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+      "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+    },
     body: JSON.stringify(courses)
   } 
 }
@@ -50,7 +58,11 @@ module.exports.getCourseByName = async(event) => {
 
   return {
     statusCode: 200,
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 
+      "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+      "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+      "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+    },
     body: JSON.stringify(course)
   }
 
@@ -65,7 +77,11 @@ module.exports.getAll=  async (event, context, callback) => {
         })
         return {
           statusCode: 200,
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+            "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+            "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+          },
           body: JSON.stringify(coursesAll)
         }     
     
@@ -73,7 +89,11 @@ module.exports.getAll=  async (event, context, callback) => {
     console.error(error)
     return {
       statusCode: 500,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+        "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+        "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+      },
       body: JSON.stringify(error)
     }
   }

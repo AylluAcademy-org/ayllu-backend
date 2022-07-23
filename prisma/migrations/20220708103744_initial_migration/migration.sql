@@ -87,7 +87,7 @@ CREATE TABLE "Modules" (
     "image" TEXT,
     "class" INTEGER,
     "time" DOUBLE PRECISION,
-    "courseId" INTEGER NOT NULL,
+    "courseId" INTEGER,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -101,7 +101,7 @@ CREATE TABLE "Lessons" (
     "status" BOOLEAN NOT NULL DEFAULT true,
     "image" TEXT,
     "video" TEXT NOT NULL,
-    "moduleId" INTEGER NOT NULL,
+    "moduleId" INTEGER,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -115,7 +115,7 @@ CREATE TABLE "Resources" (
     "description" TEXT,
     "status" BOOLEAN NOT NULL DEFAULT true,
     "url" TEXT,
-    "lessonId" INTEGER NOT NULL,
+    "lessonId" INTEGER,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -140,7 +140,7 @@ CREATE TABLE "Questions" (
     "text" TEXT,
     "order" INTEGER NOT NULL,
     "status" BOOLEAN NOT NULL DEFAULT true,
-    "testId" INTEGER NOT NULL,
+    "testId" INTEGER,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -154,7 +154,7 @@ CREATE TABLE "Options" (
     "order" INTEGER NOT NULL,
     "status" BOOLEAN NOT NULL DEFAULT true,
     "value" BOOLEAN NOT NULL DEFAULT false,
-    "questionId" INTEGER NOT NULL,
+    "questionId" INTEGER,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -164,9 +164,9 @@ CREATE TABLE "Options" (
 -- CreateTable
 CREATE TABLE "UsersOnCourses" (
     "useroncourse_Id" SERIAL NOT NULL,
-    "userId" INTEGER NOT NULL,
-    "courseId" INTEGER NOT NULL,
-    "progress" INTEGER NOT NULL,
+    "userId" INTEGER,
+    "courseId" INTEGER,
+    "progress" DOUBLE PRECISION NOT NULL,
     "ended" BOOLEAN NOT NULL DEFAULT false,
     "grade" DOUBLE PRECISION NOT NULL,
     "rating" INTEGER NOT NULL DEFAULT 0,
@@ -181,8 +181,8 @@ CREATE TABLE "UsersOnCourses" (
 -- CreateTable
 CREATE TABLE "ModulesOnCourse" (
     "useronmodule_id" SERIAL NOT NULL,
-    "module_id" INTEGER NOT NULL,
-    "userOnCourse_id" INTEGER NOT NULL,
+    "module_id" INTEGER,
+    "userOnCourse_id" INTEGER,
     "lessonsCompleted" INTEGER NOT NULL DEFAULT 0,
     "progress" INTEGER NOT NULL DEFAULT 0,
     "isEnded" BOOLEAN NOT NULL DEFAULT false,
@@ -198,23 +198,17 @@ CREATE TABLE "ModulesOnCourse" (
 -- CreateTable
 CREATE TABLE "TestAnswers" (
     "testAnwers_id" SERIAL NOT NULL,
-    "userOnCourse_id" INTEGER NOT NULL,
-    "test_id" INTEGER NOT NULL,
-    "question_id" INTEGER NOT NULL,
+    "userOnCourse_id" INTEGER,
+    "test_id" INTEGER,
+    "question_id" INTEGER,
     "optionSelected" INTEGER NOT NULL,
-    "value" BOOLEAN NOT NULL,
+    "value" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "TestAnswers_pkey" PRIMARY KEY ("testAnwers_id")
 );
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Users_email_key" ON "Users"("email");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Modules_courseId_key" ON "Modules"("courseId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Tests_moduleId_key" ON "Tests"("moduleId");
 
 -- AddForeignKey
 ALTER TABLE "Posts" ADD CONSTRAINT "Posts_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "Users"("user_id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -232,40 +226,40 @@ ALTER TABLE "Courses" ADD CONSTRAINT "Courses_authorId_fkey" FOREIGN KEY ("autho
 ALTER TABLE "Courses" ADD CONSTRAINT "Courses_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Categories"("category_id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Modules" ADD CONSTRAINT "Modules_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "Courses"("course_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Modules" ADD CONSTRAINT "Modules_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "Courses"("course_id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Lessons" ADD CONSTRAINT "Lessons_moduleId_fkey" FOREIGN KEY ("moduleId") REFERENCES "Modules"("module_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Lessons" ADD CONSTRAINT "Lessons_moduleId_fkey" FOREIGN KEY ("moduleId") REFERENCES "Modules"("module_id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Resources" ADD CONSTRAINT "Resources_lessonId_fkey" FOREIGN KEY ("lessonId") REFERENCES "Lessons"("lesson_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Resources" ADD CONSTRAINT "Resources_lessonId_fkey" FOREIGN KEY ("lessonId") REFERENCES "Lessons"("lesson_id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Tests" ADD CONSTRAINT "Tests_moduleId_fkey" FOREIGN KEY ("moduleId") REFERENCES "Modules"("module_id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Questions" ADD CONSTRAINT "Questions_testId_fkey" FOREIGN KEY ("testId") REFERENCES "Tests"("test_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Questions" ADD CONSTRAINT "Questions_testId_fkey" FOREIGN KEY ("testId") REFERENCES "Tests"("test_id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Options" ADD CONSTRAINT "Options_questionId_fkey" FOREIGN KEY ("questionId") REFERENCES "Questions"("question_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Options" ADD CONSTRAINT "Options_questionId_fkey" FOREIGN KEY ("questionId") REFERENCES "Questions"("question_id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "UsersOnCourses" ADD CONSTRAINT "UsersOnCourses_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Users"("user_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "UsersOnCourses" ADD CONSTRAINT "UsersOnCourses_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Users"("user_id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "UsersOnCourses" ADD CONSTRAINT "UsersOnCourses_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "Courses"("course_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "UsersOnCourses" ADD CONSTRAINT "UsersOnCourses_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "Courses"("course_id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ModulesOnCourse" ADD CONSTRAINT "ModulesOnCourse_module_id_fkey" FOREIGN KEY ("module_id") REFERENCES "Modules"("module_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "ModulesOnCourse" ADD CONSTRAINT "ModulesOnCourse_module_id_fkey" FOREIGN KEY ("module_id") REFERENCES "Modules"("module_id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ModulesOnCourse" ADD CONSTRAINT "ModulesOnCourse_userOnCourse_id_fkey" FOREIGN KEY ("userOnCourse_id") REFERENCES "UsersOnCourses"("useroncourse_Id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "ModulesOnCourse" ADD CONSTRAINT "ModulesOnCourse_userOnCourse_id_fkey" FOREIGN KEY ("userOnCourse_id") REFERENCES "UsersOnCourses"("useroncourse_Id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "TestAnswers" ADD CONSTRAINT "TestAnswers_test_id_fkey" FOREIGN KEY ("test_id") REFERENCES "Tests"("test_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "TestAnswers" ADD CONSTRAINT "TestAnswers_test_id_fkey" FOREIGN KEY ("test_id") REFERENCES "Tests"("test_id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "TestAnswers" ADD CONSTRAINT "TestAnswers_question_id_fkey" FOREIGN KEY ("question_id") REFERENCES "Questions"("question_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "TestAnswers" ADD CONSTRAINT "TestAnswers_question_id_fkey" FOREIGN KEY ("question_id") REFERENCES "Questions"("question_id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "TestAnswers" ADD CONSTRAINT "TestAnswers_userOnCourse_id_fkey" FOREIGN KEY ("userOnCourse_id") REFERENCES "UsersOnCourses"("useroncourse_Id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "TestAnswers" ADD CONSTRAINT "TestAnswers_userOnCourse_id_fkey" FOREIGN KEY ("userOnCourse_id") REFERENCES "UsersOnCourses"("useroncourse_Id") ON DELETE SET NULL ON UPDATE CASCADE;
