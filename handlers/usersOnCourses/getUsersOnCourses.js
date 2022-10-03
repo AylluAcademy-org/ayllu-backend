@@ -6,7 +6,25 @@ module.exports.getAllUsersOnCourses = async() => {
 
     try {
 
-        const allUsersOnCourse = await prisma.usersOnCourses.findMany()
+        const allUsersOnCourse = await prisma.usersOnCourses.findMany({
+            include: {
+                user: {
+                    select: {
+                        name: true,
+                        email: true,
+                        image: true
+                    }
+                },
+                course: {
+                    select: {
+                        name: true
+                    }
+                }
+            },
+            orderBy: {
+                useroncourse_Id: 'asc'
+            }
+        })
         console.log(allUsersOnCourse);
         
         return {

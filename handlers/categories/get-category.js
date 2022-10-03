@@ -4,15 +4,30 @@ const prisma = new PrismaClient()
 
 exports.handler = async (event, context, callback) => {
   try {
+    
     const categories = await prisma.categories.findMany({    
         where:{
             status:true,
         } , 
         select: {
-        category_id: true,
-        name: true,        
-      },   
+          category_id: true,
+          name: true,
+          courser: {
+            select: {
+              course_id: true,
+              name: true  
+            }
+          },
+          image: true,
+          createdAt: true,
+          updatedAt: true        
+        },
+        orderBy: {
+          category_id: 'asc'
+        }   
     })
+
+
     return {
       statusCode: 200,
       headers: { 
@@ -22,6 +37,7 @@ exports.handler = async (event, context, callback) => {
       },
       body: JSON.stringify(categories)
     }
+
   } catch (error) {
     console.error(error)
     return {

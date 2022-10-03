@@ -88,6 +88,12 @@ functions:
       - http:
           method: POST
           path: /categories
+  updateCategory:
+    handler: handlers/categories/update-category.handler
+    events:
+      - http:
+          method: POST
+          path: /categories/updateCategory
   #COURSE  
   getCourseById:
     handler: handlers/courses/get-course.getCourseById
@@ -113,6 +119,12 @@ functions:
       - http:
           method: GET
           path: /courses
+  getCourseByAuthorId:
+    handler: handlers/courses/get-course.getCourseByAuthorId
+    events:
+      - http:
+          method: GET
+          path: /courses/getCourseByAuthorId
   createCourse:
     handler: handlers/courses/create-course.handler
     events:
@@ -392,6 +404,12 @@ functions:
       - http:
           method: POST
           path: /testAnswers/getTestGrade
+  getTestReviewed:
+    handler: handlers/testAnswers/userTestAnswers.getTestReviewed
+    events: 
+      - http:
+          method: POST
+          path: /testAnswers/getTestReviewed
 
 # only include the Prisma binary required on AWS Lambda while packaging
 package:

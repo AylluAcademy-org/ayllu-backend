@@ -17,9 +17,7 @@ const {
           "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
           "Access-Control-Allow-Methods": (process.env.METHODS).toString()
         },
-        body: JSON.stringify({
-          message:'Perfil asignado correctamente'
-          })
+        body: JSON.stringify({message:'Perfil asignado correctamente'})
       }
     } catch (e) {
       if (e instanceof Prisma.PrismaClientRequestError) {

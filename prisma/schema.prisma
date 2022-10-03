@@ -35,6 +35,7 @@ model Users {
   wallet String?
   image String?
   totalRewards Int @default(0)
+  status Boolean   @default(true)
   posts   Posts[]  
   courses   Courses[] 
   profile UsersOnProfile[] 
@@ -73,7 +74,8 @@ model Courses {
   image    String? 
   video   String?
   lesson Int?
-  likes   Int?  
+  likes   Int?
+  tests   Int?
   categoryId Int
   authorId Int   
   status    Boolean @default(true)

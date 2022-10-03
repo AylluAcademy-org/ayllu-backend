@@ -12,19 +12,19 @@ exports.handler = async(event) => {
         // check if there's any record of the answers for the current test done by the user
         const existUserTestAnswer = await prisma.testAnswers.findFirst({
             where: {
-                userOnCourse_id: data.userOnCourse_id,
-                test_id: data.test_id
+                userOnCourse_id: data[0].userOnCourse_id,
+                test_id: data[0].test_id
             }
         })
 
         //If there are records of answers for the current test it just displays an error message
         //Otherwise, many records of the answers are created on the testAnswers table.
-        userTestAnswers = !existUserTestAnswer ? await prisma.testAnswers.createMany({ data }) : {"Error:": "Las respuestas de este test ya han sido registradas."}
+        userTestAnswers = !existUserTestAnswer ? await prisma.testAnswers.createMany({ data }) : {"Error:": "Las respuestas de este test ya han sido registradas."};
 
         //Get all the questions that are part of the test done by the user, along with the options.
         const optionValue = await prisma.questions.findMany({
             where: {
-                testId: data.test_id,
+                testId: data[0].test_id,
                 status: true,
             },
             include: {
@@ -44,8 +44,8 @@ exports.handler = async(event) => {
         //Get all records of answers given by the user on the test. 
         const testAnswers = await prisma.testAnswers.findMany({
             where: {
-                userOnCourse_id: data.userOnCourse_id,
-                test_id: data.test_id
+                userOnCourse_id: data[0].userOnCourse_id,
+                test_id: data[0].test_id
             }
         })
 
@@ -53,7 +53,7 @@ exports.handler = async(event) => {
         //selected by the user is true. If there's any answer that match with the right option, it will update that record value to true.  
         if(len > 0){
             for(var i = 0; i< len; i++){
-                if(testAnswers[i].optionSelected == optionValue[i].options[0].order){
+                if(testAnswers[i].optionSelected === optionValue[i].options[0].order){
                     if(optionValue[i].options[0].value){
                         await prisma.testAnswers.update({
                             where: {

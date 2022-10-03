@@ -12,6 +12,9 @@ module.exports.getUserTestAnswers = async(event) => {
             where: {
                 userOnCourse_id: data.userOnCourse_id,
                 test_id: data.test_id
+            },
+            orderBy: {
+                testAnwers_id: 'asc'
             }
         })
 
@@ -57,6 +60,9 @@ module.exports.getTestGrade = async(event) => {
             where: {
                 userOnCourse_id: data.userOnCourse_id,
                 test_id: data.test_id
+            },
+            orderBy: {
+                testAnwers_id: 'asc'
             }
         })
 
@@ -85,7 +91,7 @@ module.exports.getTestGrade = async(event) => {
             }
         })
 
-        //We check that there are questions for the current test, and that we got the record of the current module test.
+        // //We check that there are questions for the current test, and that we got the record of the current module test.
         if(questions > 0 && currentModule){
             
             //we iterate every record of the option selected for every question. If any value of those records is true, it will add one more number to sum variable.
@@ -140,6 +146,128 @@ module.exports.getTestGrade = async(event) => {
         }
 
     }catch (error) {
+        console.error(error)
+        
+        return {
+        statusCode: 500,
+        headers: { 
+            "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+            "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+            "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+        },
+        body: JSON.stringify(error)
+        }
+    }finally {
+        await prisma.$disconnect()
+    }
+
+}
+
+//Handler to get student answers of a test, and review which of them are correct and wrong. 
+module.exports.getTestReviewed = async(event) => {
+    const prisma = new PrismaClient()
+    const data = JSON.parse(event.body);
+    var testReviewed = []
+  
+    try {        
+        
+        // check if there's any record of the answers for the current test done by the user
+        const isUserTestAnswer = await prisma.testAnswers.findFirst({
+            where: {
+                userOnCourse_id: data.userOnCourse_id,
+                test_id: data.test_id
+            },
+            orderBy: {
+                testAnwers_id: 'asc'
+            }
+        })
+
+        //To get the test developed by the student
+        const testDone = await prisma.tests.findUnique({
+            where: {
+                test_id: data.test_id
+            },
+            select: {
+                description: true,
+                questions: {
+                    select: {
+                        text: true,
+                        order: true,
+                        options: {
+                            where: {
+                                value: true
+                            },
+                            select: {
+                                order: true,
+                                value: true
+                            }
+                        }
+                    }
+                }
+            }
+        })
+
+        // If there's any record of answers given by the student for a specific test, we proceed to review the test to determine 
+        // which answers are correct and which are wrong.
+        if(isUserTestAnswer){
+            //Get the records of the answers given by the user for the current test.
+            const answersGiven = await prisma.testAnswers.findMany({
+                where: {
+                    userOnCourse_id: data.userOnCourse_id,
+                    test_id: data.test_id
+                },
+                select: {
+                    optionSelected: true,
+                    value: true
+                },
+                orderBy: {
+                    testAnwers_id: 'asc'
+                }
+            })
+
+            /** If there are answers given by the student for the current test, we evaluate if the answer selected is the right one,
+            /*  if it is right we display a "Respuesta correcta" message, else "Respuesta incorrecta" message.  
+            /*  If there's no record of answers we display an Error message  */
+            answersGiven ? answersGiven.forEach((e, i) => {
+                            let res = (e.optionSelected === testDone.questions[i].options[0].order) && 
+                                      (e.value === testDone.questions[i].options[0].value) ? 
+                                      {"Respuesta": "Respuesta correcta"} : {"Respuesta": "Respuesta incorrecta"}
+                            let option = {"OptionSelected" : e.optionSelected}
+
+                            let result = Object.assign(option, res)
+
+                            testReviewed.push(result)
+                            
+                      }) : {"Error: " : "Respuestas no registradas"}
+            
+            // We insert to each question the answer selected (option), and the result (if it's correct or wrong)          
+            testDone.questions.forEach((e, i) => {
+                testDone.questions[i] = Object.assign(e, testReviewed[i])
+            })
+
+        }else {
+            return {
+                statusCode: 200,
+                headers: { 
+                    "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+                    "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+                    "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+                },
+                body: JSON.stringify({"Error: ": "El test aún no ha sido desarrollado por el estudiante."})
+            }
+        }
+
+        return {
+            statusCode: 200,
+            headers: { 
+                "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+                "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+                "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+            },
+            body: JSON.stringify(testDone)
+        }
+
+    }catch(error){
         console.error(error)
         
         return {

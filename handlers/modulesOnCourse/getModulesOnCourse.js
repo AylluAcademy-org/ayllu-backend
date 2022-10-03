@@ -150,7 +150,7 @@ module.exports.getModulesAverageGrade = async(event) => {
             //If the modules already completed are all the modules of a specific course, it will get every grade obtained on every module
             //then it will calculate the average grade obtained of the course, and it'll also calculate the progress of the course.
             //Due all modules has been completed progress will be 100%, and the progress, status (ended) and grade will be updated, so it shows the course has been completed.
-            if(modulesCompleted == modulesByCourse){
+            if(modulesCompleted === modulesByCourse){
                 let sum = 0
 
                 for(var i = 0; i < modulesByCourse; i++){

@@ -4,8 +4,52 @@ const prisma = new PrismaClient()
 
 module.exports.getAllUsers = async (event, context, callback) => {
   try {
-    const users = await prisma.Users.findMany({
-      include: { profile: true }
+
+    const users = await prisma.users.findMany({
+      where: {
+        status: true
+      },
+      select: {
+        user_id: true,
+        name: true,
+        email: true,
+        wallet: true,
+        image: true,
+        totalRewards: true,
+        createdAt: true,
+        updatedAt: true,
+        profile: {
+          select: {
+            profile: {
+              select: {
+                name: true
+              }
+            }
+          }
+        },
+        courses: {
+          select: {
+            name: true,
+            description: true
+          }
+        },
+        enroll: {
+          select: {
+            course: {
+              select: {
+                name: true,
+                description: true
+              }
+            },
+            progress: true,
+            ended: true
+          }
+        },
+        posts: true
+      },
+      orderBy: {
+        user_id: 'asc'
+      }
     })
     
     return {
