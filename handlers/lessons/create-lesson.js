@@ -7,8 +7,24 @@ const {
   
   exports.handler = async (event, context, callback) => {
     try {
+
       const data = JSON.parse(event.body)
       const createdLesson = await prisma.Lessons.create({ data })
+
+      const getAllLessons = await prisma.lessons.findMany({
+        where: {
+          moduleId: data.moduleId
+        }
+      });
+
+      await prisma.modules.update({
+        where: {
+          module_id: data.moduleId
+        },
+        data: {
+          class: getAllLessons.length
+        }
+      })
     
       return {
         statusCode: 200,

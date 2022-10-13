@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Courses" ADD COLUMN     "tests" INTEGER DEFAULT 0,
+ALTER COLUMN "lesson" SET DEFAULT 0,
+ALTER COLUMN "likes" SET DEFAULT 0;

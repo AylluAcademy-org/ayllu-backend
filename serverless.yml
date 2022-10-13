@@ -10,7 +10,6 @@ provider:
   runtime: nodejs12.x
   # versionFunctions: false
 
-
 functions:
   status:
     handler: handlers/status.handler
@@ -119,18 +118,36 @@ functions:
       - http:
           method: GET
           path: /courses
+  GetAllCourseInfo:
+    handler: handlers/courses/get-course.GetAllCourseInfo
+    events:
+      - http:
+          method: GET
+          path: /courses/GetAllCourseInfo
   getCourseByAuthorId:
     handler: handlers/courses/get-course.getCourseByAuthorId
     events:
       - http:
           method: GET
           path: /courses/getCourseByAuthorId
+  getCourseByAuthorIdAndCategoryId:
+    handler: handlers/courses/get-course.getCourseByAuthorIdAndCategoryId
+    events:
+      - http:
+          method: GET
+          path: /courses/getCourseByAuthorIdAndCategoryId
   createCourse:
     handler: handlers/courses/create-course.handler
     events:
       - http:
           method: POST
           path: /courses
+  updateCourse:
+    handler: handlers/courses/updateCourse.handler
+    events:
+      - http: 
+          method: POST
+          path: /courses/updateCourse
   #MODULE 
   getModuleById:
     handler: handlers/modules/get-module.getModuleById

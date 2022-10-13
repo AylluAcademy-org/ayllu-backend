@@ -73,9 +73,9 @@ model Courses {
   duration Float?  
   image    String? 
   video   String?
-  lesson Int?
-  likes   Int?
-  tests   Int?
+  lesson Int?   @default(0)
+  rating   Int?  @default(0)
+  tests   Int?  @default(0)
   categoryId Int
   authorId Int   
   status    Boolean @default(true)
@@ -93,8 +93,8 @@ model Modules {
   description String?
   status    Boolean @default(true)
   image    String?
-  class Int?
-  time  Float?
+  class Int?  @default(0)
+  time  Float?  @default(0)
   course    Courses?     @relation(fields: [courseId], references: [course_id]) 
   courseId Int?
   lessons Lessons[]

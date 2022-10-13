@@ -15,7 +15,8 @@ module.exports.getCourseById= async (event, context, callback) => {
         author: {
           select: {
             name: true,
-            email: true
+            email: true,
+            image: true
           }
         },
         category: {
@@ -33,11 +34,22 @@ module.exports.getCourseById= async (event, context, callback) => {
             time: true,
             lessons: {
               select: {
-                name: true
+                name: true,
+                image: true,
+                video: true,
+              },
+              orderBy: {
+                lesson_id: 'asc'
               }
             }
+          },
+          orderBy: {
+            module_id: 'asc'
           }
         }
+      },
+      orderBy: {
+        course_id: 'asc'
       }                     
   })
 
@@ -57,12 +69,18 @@ module.exports.getCourseById= async (event, context, callback) => {
 module.exports.getCourseByCategory= async (event, context, callback) => {
   const data = JSON.parse(event.body)
 
-  const courses = await prisma.Courses.findMany({    
+  try {
+    
+    const courses = await prisma.Courses.findMany({    
         where:{
             categoryId :data.categoryId,
             status:true,
-        } ,           
+        },
+        orderBy: {
+          course_id: 'asc'
+        }
       })
+
   return {
     statusCode: 200,
     headers: { 
@@ -72,6 +90,17 @@ module.exports.getCourseByCategory= async (event, context, callback) => {
     },
     body: JSON.stringify(courses)
   } 
+  }catch(error) {
+        return {
+          statusCode: 500,
+          headers: { 
+            "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+            "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+            "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+          },
+          body: JSON.stringify(error.message)
+        }
+  }
 }
 
 module.exports.getCourseByName = async(event) => {
@@ -81,22 +110,143 @@ module.exports.getCourseByName = async(event) => {
     where: {
       name: data.name,
       status: true
+    },
+    orderBy: {
+      course_id: 'asc'
     }
   })
 
   return {
     statusCode: 200,
     headers: { 
-      "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
-      "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
-      "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+      "Access-Control-Allow-Headers" : process.env.HEADERS.toString(),
+      "Access-Control-Allow-Origin": process.env.ORIGIN.toString(),
+      "Access-Control-Allow-Methods": process.env.METHODS.toString()
     },
     body: JSON.stringify(course)
+  }
+  
+}
+
+/** Handler to get all the information of a course: general information, author, category
+*   modules with its test/s, lessons (with general information and resources).
+*   This information is meant to be used by the teachers.
+*/
+module.exports.GetAllCourseInfo = async (event) => {
+
+  const data = event.queryStringParameters && event.queryStringParameters.course_id
+
+  let courseId = parseInt(data)
+  
+  try {
+    const allCourseInfo = await prisma.courses.findMany({
+      where: {
+        course_id: courseId,
+        status: true
+      },
+      include: {
+        author: {
+          select: {
+            name: true,
+            email: true,
+            image: true
+          }
+        },
+        category: {
+          select: {
+            name: true,
+            image: true
+          }
+        },
+        modules: {
+          select: {
+            name: true,
+            description: true,
+            image: true,
+            class: true,
+            time: true,
+            test: {
+              select: {
+                test_id: true,
+                description: true,
+                questions: {
+                  select: {
+                    text: true,
+                    order: true,
+                    status: true,
+                    options: {
+                      select: {
+                        text: true,
+                        order: true,
+                        value: true
+                      },
+                      orderBy: {
+                        order: 'asc'
+                      }
+                    }
+                  },
+                  orderBy: {
+                    order: 'asc'
+                  }
+                }
+              },
+              orderBy: {
+                test_id: 'asc'
+              }
+            },
+            lessons: {
+              select: {
+                name: true,
+                image: true,
+                video: true,
+                resources: {
+                  select: {
+                    name: true,
+                    description: true,
+                    url: true
+                  }
+                }
+              },
+              orderBy: {
+                lesson_id: 'asc'
+              }
+            },
+          },
+          orderBy: {
+            module_id: 'asc'
+          }
+        }
+      },
+      orderBy: {
+        course_id: 'asc'
+      }
+    });
+
+    return {
+      statusCode: 200,
+      headers: { 
+        "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+        "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+        "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+      },
+      body: JSON.stringify(allCourseInfo)
+    }
+
+  } catch (error) {
+    return {
+      statusCode: 500,
+      headers: { 
+        "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+        "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+        "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+      },
+      body: JSON.stringify(error.message)
+    }
   }
 
 }
 
-module.exports.getAll=  async (event, context, callback) => {
+module.exports.getAll=  async (event) => {
   try {
         const coursesAll = await prisma.Courses.findMany({    
           where:{
@@ -106,7 +256,8 @@ module.exports.getAll=  async (event, context, callback) => {
             author: {
               select: {
                 name: true,
-                email: true
+                email: true,
+                image: true
               }
             },
             category: {
@@ -124,12 +275,21 @@ module.exports.getAll=  async (event, context, callback) => {
                 time: true,
                 lessons: {
                   select: {
-                    name: true
+                    name: true,
+                  },
+                  orderBy: {
+                    lesson_id: 'asc'
                   }
                 }
+              },
+              orderBy: {
+                module_id: 'asc'
               }
             }
-          }          
+          },
+          orderBy: {
+            course_id: 'asc'
+          } 
         })
 
         return {
@@ -151,7 +311,7 @@ module.exports.getAll=  async (event, context, callback) => {
         "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
         "Access-Control-Allow-Methods": (process.env.METHODS).toString()
       },
-      body: JSON.stringify(error)
+      body: JSON.stringify(error.message)
     }
   }
 }
@@ -168,7 +328,8 @@ module.exports.getCourseByAuthorId = async(event) => {
         author: {
           select: {
             name: true,
-            email: true
+            email: true,
+            image: true
           }
         },
         category: {
@@ -177,6 +338,9 @@ module.exports.getCourseByAuthorId = async(event) => {
             image: true
           }
         }
+      },
+      orderBy: {
+        course_id: 'asc'
       }
     })
 
@@ -200,7 +364,120 @@ module.exports.getCourseByAuthorId = async(event) => {
         "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
         "Access-Control-Allow-Methods": (process.env.METHODS).toString()
       },
-      body: JSON.stringify(error)
+      body: JSON.stringify(error.message)
+    }
+  }
+
+}
+
+module.exports.getCourseByAuthorIdAndCategoryId = async (event) => {
+  let author_Id = parseInt(event.queryStringParameters && event.queryStringParameters.authorId);
+  let category_Id = parseInt(event.queryStringParameters && event.queryStringParameters.categoryId);
+
+  try {
+
+    const courseByAuthorAndCategory = await prisma.courses.findMany({
+      where: {
+        authorId: author_Id,
+        categoryId: category_Id
+      },
+      include: {
+        author: {
+          select: {
+            name: true,
+            email: true,
+            image: true
+          }
+        },
+        category: {
+          select: {
+            name: true,
+            image: true
+          }
+        },
+        modules: {
+          select: {
+            name: true,
+            description: true,
+            image: true,
+            class: true,
+            time: true,
+            test: {
+              select: {
+                test_id: true,
+                description: true,
+                questions: {
+                  select: {
+                    text: true,
+                    order: true,
+                    status: true,
+                    options: {
+                      select: {
+                        text: true,
+                        order: true,
+                        value: true
+                      },
+                      orderBy: {
+                        order: 'asc'
+                      }
+                    }
+                  },
+                  orderBy: {
+                    order: 'asc'
+                  }
+                }
+              },
+              orderBy: {
+                test_id: 'asc'
+              }
+            },
+            lessons: {
+              select: {
+                name: true,
+                image: true,
+                video: true,
+                resources: {
+                  select: {
+                    name: true,
+                    description: true,
+                    url: true
+                  }
+                }
+              },
+              orderBy: {
+                lesson_id: 'asc'
+              }
+            },
+          },
+          orderBy: {
+            module_id: 'asc'
+          }
+        }
+      },
+      orderBy: {
+        course_id: 'asc'
+      }
+    });
+
+    return {
+      statusCode: 200,
+      headers: { 
+        "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+        "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+        "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+      },
+      body: JSON.stringify(courseByAuthorAndCategory)
+    }
+    
+  } catch (error) {
+    return {
+      statusCode: 500,
+      headers: { 
+        "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+        "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+        "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+      },
+      body: JSON.stringify(error.message)
     }
   }
 

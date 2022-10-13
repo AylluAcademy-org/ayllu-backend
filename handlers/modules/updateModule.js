@@ -6,6 +6,13 @@ exports.handler = async(event) => {
     const data = JSON.parse(event.body);
 
     try {
+
+        const classes = await prisma.lessons.findMany({
+            where: {
+                moduleId: data.module_id
+            }
+        })
+
         const updatedModule = await prisma.modules.update({
             where: {
                 module_id: data.module_id
@@ -15,7 +22,7 @@ exports.handler = async(event) => {
                 description: data.description,
                 status: data.status,
                 image: data.image,
-                class: data.class,
+                class: classes.length,
                 time: data.time,
                 courseId: data.courseId
             },
@@ -51,7 +58,7 @@ exports.handler = async(event) => {
                 "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
                 "Access-Control-Allow-Methods": (process.env.METHODS).toString()
             },
-            body: JSON.stringify(error)
+            body: JSON.stringify(error.message)
         }
     } finally {
         await prisma.$disconnect();
