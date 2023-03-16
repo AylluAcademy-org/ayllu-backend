@@ -7,7 +7,8 @@ module.exports.getCourseById= async (event, context, callback) => {
 
   let courseId = parseInt(data)
 
-  const course = await prisma.Courses.findUnique({    
+  try {
+    const course = await prisma.Courses.findFirst({    
       where:{
           course_id:courseId
       },
@@ -50,20 +51,30 @@ module.exports.getCourseById= async (event, context, callback) => {
       },
       orderBy: {
         course_id: 'asc'
-      }                     
-  })
+      }                   
+    })
 
-  console.log(course)
-
-  return {
-    statusCode: 200,
-    headers: { 
-      "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
-      "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
-      "Access-Control-Allow-Methods": (process.env.METHODS).toString()
-    },
-    body: JSON.stringify(course)
-  } 
+    return {
+      statusCode: 200,
+      headers: { 
+        "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+        "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+        "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+      },
+      body: JSON.stringify(course)
+    }
+  } catch (error) {
+    return {
+      statusCode: 500,
+      headers: { 
+        "Access-Control-Allow-Headers" : (process.env.HEADERS).toString(),
+        "Access-Control-Allow-Origin": (process.env.ORIGIN).toString(),
+        "Access-Control-Allow-Methods": (process.env.METHODS).toString()
+      },
+      body: JSON.stringify(error.message)
+    }
+  }
+  
 }
 
 module.exports.getCourseByCategory= async (event, context, callback) => {

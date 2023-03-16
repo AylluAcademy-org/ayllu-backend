@@ -1,6 +1,6 @@
 generator client {
   provider      = "prisma-client-js"
-  binaryTargets = ["native", "rhel-openssl-1.0.x"]
+  binaryTargets = ["native", "rhel-openssl-1.0.x", "debian-openssl-3.0.x"]
 }
 
 datasource db {
@@ -23,7 +23,7 @@ model Profiles {
   name String
   user UsersOnProfile[] 
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 
@@ -41,7 +41,7 @@ model Users {
   profile UsersOnProfile[] 
   enroll UsersOnCourses[]
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model UsersOnProfile {
@@ -51,7 +51,7 @@ model UsersOnProfile {
   profileId Int
   status Boolean? @default(true)
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())  
+  updatedAt DateTime @updatedAt
   @@id([userId, profileId])
 }
 
@@ -62,7 +62,7 @@ model Categories {
   image    String?
   courser   Courses[]  
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Courses {
@@ -83,8 +83,9 @@ model Courses {
   author    Users     @relation(fields: [authorId], references: [user_id]) 
   modules Modules[]
   users UsersOnCourses[]
+  rewards Rewards[]
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())  
+  updatedAt DateTime @updatedAt 
 }
 
 model Modules {
@@ -101,7 +102,7 @@ model Modules {
   test   Tests[]
   modulesOnCourse ModulesOnCourse[] 
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Lessons {
@@ -114,7 +115,7 @@ model Lessons {
   moduleId Int?
   resources Resources[]
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Resources {
@@ -126,7 +127,7 @@ model Resources {
   lesson    Lessons?     @relation(fields: [lessonId], references: [lesson_id])   
   lessonId Int?
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 
@@ -139,7 +140,7 @@ model Tests {
   status    Boolean @default(true)
   questions Questions[]
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   testAnswers TestAnswers[]
 }
 
@@ -153,7 +154,7 @@ model Questions {
   options Options[]
   testAnswers TestAnswers[]
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
  
 }
 
@@ -166,7 +167,7 @@ model Options {
   question    Questions? @relation(fields: [questionId], references: [question_id]) 
   questionId Int?
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 //MATRICULAS
@@ -183,9 +184,10 @@ model UsersOnCourses {
   review String?
   reward Int  @default(0)  
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   modulesOnCourse ModulesOnCourse[]
-  testAnswers       TestAnswers[]
+  testAnswers     TestAnswers[]
+  rewards         Rewards[]
 }
 
 //Modulos que estudiantes estan cursando o cursaron.
@@ -202,7 +204,7 @@ model ModulesOnCourse {
   moduleRating      Int             @default(0)
   userReview        String?
   createdAt         DateTime        @default(now())
-  updatedAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
 }
 
 model TestAnswers {
@@ -215,4 +217,29 @@ model TestAnswers {
   question_id       Int?
   optionSelected    Int
   value             Boolean         @default(false)
+}
+
+model Rewards {
+  reward_id   Int               @id @default(autoincrement())
+  course      Courses?          @relation(fields: [courseId], references: [course_id])
+  courseId    Int?      
+  userOnCourse  UsersOnCourses? @relation(fields: [student_id], references: [useroncourse_Id])
+  student_id  Int?  
+  amount      Int               @default(0)
+  wallet      String            @default("")
+  status      Boolean           @default(true)
+  transaction Transactions[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Transactions {
+  transaction_id  Int       @id @default(autoincrement())
+  reward          Rewards?  @relation(fields: [rewardId], references: [reward_id])
+  rewardId        Int?      @default(0)
+  date            DateTime 
+  Tx_id           String    @default("")
+  fee             Float     @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
