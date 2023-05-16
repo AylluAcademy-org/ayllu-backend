@@ -12,12 +12,6 @@ provider:
   versionFunctions: false
 
 functions:
-  # status:
-  #   handler: handlers/status.handler
-  #   events:
-  #     - http:
-  #         method: GET
-  #         path: /status
   #Seed
   seed:
     handler: handlers/seed.handler
