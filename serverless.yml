@@ -1,0 +1,813 @@
+org: neielv
+app: aws-node-express-api
+service: ayllu-api-test-v2
+plugins:
+  - serverless-dotenv-plugin
+  - serverless-offline
+
+provider:
+  name: aws
+  region: us-east-1
+  runtime: nodejs14.x
+  versionFunctions: false
+
+functions:
+  #Seed
+  seed:
+    handler: handlers/seed.handler
+    events:
+      - http:
+          method: GET
+          path: /seed
+  #Auth
+  getAllUsers:
+    handler: handlers/users/getUsers.getAllUsers
+    events:
+      - http:
+          method: GET
+          path: /users/getAllUsers
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  getUserById:
+    handler: handlers/users/getUsers.getUserById
+    events:
+      - http:
+          method: GET
+          path: /users/getUserById
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  createUser:
+    handler: handlers/users/create-user.handler
+    events:
+      - http:
+          method: POST
+          path: /users/createUser
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  updateUser:
+    handler: handlers/users/update-user.handler
+    events:
+      - http:
+          method: POST
+          path: /users/updateUser
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  assingnProfile:
+    handler: handlers/users/assign-profile-user.handler
+    events:
+      - http:
+          method: POST
+          path: /users/assignProfile
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  authUsers:
+    handler: handlers/users/autenticate-user.handler
+    events:
+      - http:
+          method: POST
+          path: /users/validarUser
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  getPosts:
+    handler: handlers/posts.handler
+    events:
+      - http:
+          method: GET
+          path: /posts
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  # AUTH
+  registerUser:
+    handler: handlers/auth/auth.registerUser
+    events:
+      - http:
+          method: POST
+          path: /auth/registerUser
+          cors: true
+  registerWallet:
+    handler: handlers/auth/auth.registerWallet
+    events:
+      - http:
+          method: POST
+          path: /auth/registerWallet
+          cors: true  
+  login:
+    handler: handlers/auth/auth.login
+    events:
+      - http:
+          method: POST
+          path: /auth/login
+          cors: true
+  authorizer:
+    handler: handlers/auth/authorizer.handler
+
+  loginWallet:
+    handler: handlers/auth/auth.loginWallet
+    events:
+      - http:
+          method: POST
+          path: /auth/loginWallet
+          cors: true
+  #CATEGORY
+  getCategories:
+    handler: handlers/categories/get-category.handler
+    events:
+      - http:
+          method: GET
+          path: /categories
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  createCategory:
+    handler: handlers/categories/create-category.handler
+    events:
+      - http:
+          method: POST
+          path: /categories
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  updateCategory:
+    handler: handlers/categories/update-category.handler
+    events:
+      - http:
+          method: POST
+          path: /categories/updateCategory
+  #COURSE  
+  getCourseById:
+    handler: handlers/courses/get-course.getCourseById
+    events:
+      - http:
+          method: GET
+          path: /courses/getById
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  getCourseByIdPublic:
+    handler: handlers/courses/get-course.getCourseByIdPublic
+    events:
+      - http:
+          method: GET
+          path: /courses/getByIdPublic          
+  getCourseByCategory:
+    handler: handlers/courses/get-course.getCourseByCategory
+    events:
+      - http:
+          method: POST
+          path: /courses/getByCategory
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  getCourseByName:
+    handler: handlers/courses/get-course.getCourseByName
+    events:
+      - http:
+          method: POST
+          path: /courses/getCourseByName
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  getAllCourses:
+    handler: handlers/courses/get-course.getAll
+    events:
+      - http:
+          method: GET
+          path: /courses
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  getAllCoursesPublic:
+    handler: handlers/courses/get-course.getAllPublic
+    events:
+      - http:
+          method: GET
+          path: /courses/public
+  GetAllCourseInfo:
+    handler: handlers/courses/get-course.GetAllCourseInfo
+    events:
+      - http:
+          method: GET
+          path: /courses/GetAllCourseInfo
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  getCourseByAuthorId:
+    handler: handlers/courses/get-course.getCourseByAuthorId
+    events:
+      - http:
+          method: GET
+          path: /courses/getCourseByAuthorId
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  getCourseByAuthorIdAndCategoryId:
+    handler: handlers/courses/get-course.getCourseByAuthorIdAndCategoryId
+    events:
+      - http:
+          method: GET
+          path: /courses/getCourseByAuthorIdAndCategoryId
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  createCourse:
+    handler: handlers/courses/create-course.handler
+    events:
+      - http:
+          method: POST
+          path: /courses
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  updateCourse:
+    handler: handlers/courses/updateCourse.handler
+    events:
+      - http: 
+          method: POST
+          path: /courses/updateCourse
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  #MODULE 
+  getModuleById:
+    handler: handlers/modules/get-module.getModuleById
+    events:
+    - http:
+        method: POST
+        path: /modules/getById
+        authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  getModuleByCourse:
+    handler: handlers/modules/get-module.getModuleByCourse
+    events:
+      - http:
+          method: POST
+          path: /modules/getByCourse
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  createModule:
+    handler: handlers/modules/create-module.handler
+    events:
+      - http:
+          method: POST
+          path: /modules
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  updateModule:
+    handler: handlers/modules/updateModule.handler
+    events: 
+      - http:
+          method: POST
+          path: /modules/updateModule
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  deleteModule:
+    handler: handlers/modules/deleteModule.handler
+    events:
+      - http:
+          method: GET
+          path: /modules/deleteModule
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  #TEST
+  getTestByModuleId:
+    handler: handlers/tests/getTests.getTestByModuleId
+    events: 
+      - http:
+          method: POST
+          path: /tests/getTestByModuleId
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  createTest:
+    handler: handlers/tests/createTests.handler
+    events:
+      - http:
+          method: POST
+          path: /tests/createTest
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  updateTest:
+    handler: handlers/tests/updateTest.handler
+    events:
+      - http:
+          method: POST
+          path: /tests/updateTest
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  deleteTest:
+    handler: handlers/tests/deleteTest.handler
+    events:
+      - http:
+          method: GET
+          path: /tests/deleteTest
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  #Questions
+  getQuestionsByTest:
+    handler: handlers/questions/getQuestions.getQuestionsByTest
+    events:
+      - http:
+          method: POST
+          path: /questions/getQuestionsByTest
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  getQuestionByOrderId:
+    handler: handlers/questions/getQuestions.getQuestionByOrderId
+    events:
+      - http:
+          method: GET
+          path: /questions/getQuestionsByOrder
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  createQuestion: 
+    handler: handlers/questions/createQuestion.handler
+    events: 
+      - http:
+          method: POST
+          path: /questions/createQuestion
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  updateQuestion:
+    handler: handlers/questions/updateQuestion.handler
+    events:
+      - http:
+          method: POST
+          path: /questions/updateQuestion
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  deleteQuestion:
+    handler: handlers/questions/deleteQuestion.handler
+    events:
+      - http:
+          method: GET
+          path: /questions/deleteQuestion
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  #OPTIONS
+  getOptionsByQuestion:
+    handler: handlers/options/getOptions.getOptionsByQuestion
+    events:
+      - http:
+          method: POST
+          path: /options/getOptionsByQuestion
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  createOption:
+    handler: handlers/options/createOption.handler
+    events:
+      - http:
+          method: POST
+          path: /options/createOption
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  updateOption:
+    handler: handlers/options/updateOption.handler
+    events:
+      - http:
+          method: POST
+          path: /options/updateOption
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  deleteOption:
+    handler: handlers/options/deleteOption.handler
+    events: 
+      - http:
+          method: GET
+          path: /options/deleteOption
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  # LESSON
+  getLessonById:
+    handler: handlers/lessons/get-lesson.getLessonById
+    events:
+      - http:
+          method: POST
+          path: /lessons/getById
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  getLessonByModule:
+    handler: handlers/lessons/get-lesson.getLessonByModule
+    events:
+      - http:
+          method: POST
+          path: /lessons/getByModule
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  createLesson:
+    handler: handlers/lessons/create-lesson.handler
+    events:
+      - http:
+          method: POST
+          path: /lessons
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  # Resources
+  getResourcesByLessonId:
+    handler: handlers/resources/get-resource.getResourcesByLessonId
+    events:
+      - http:
+          method: POST
+          path: /resources/getResourcesByLessonId
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  createResource:
+    handler: handlers/resources/create-resource.handler
+    events: 
+      - http:
+          method: POST
+          path: /resources
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  updateResources:
+    handler: handlers/resources/updateResources.handler
+    events:
+      - http:
+          method: POST
+          path: /resources/updateResources
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  deleteResource:
+    handler: handlers/resources/deleteResource.handler
+    events:
+      - http:
+          method: GET
+          path: /resources/deleteResource
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  #UsersOnCourses 
+  getAllUsersOnCourses:
+    handler: handlers/usersOnCourses/getUsersOnCourses.getAllUsersOnCourses
+    events:
+      - http: 
+          method: GET
+          path: /usersOnCourses
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  getUserOnCourseByCourseId:
+    handler: handlers/usersOnCourses/getUsersOnCourses.getUserOnCourseByCourseId
+    events:
+      - http:
+          method: GET
+          path: /usersOnCourses/getUserOnCourseByCourseId
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  getUserOnCourseByCourseIdUserId:
+    handler: handlers/usersOnCourses/getUsersOnCourses.getUserOnCourseByCourseIdUserId
+    events:
+      - http:
+          method: POST
+          path: /usersOnCourses/getUserOnCourseByCourseIdUserId
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300          
+  getCoursesActive:
+    handler: handlers/usersOnCourses/getUsersOnCourses.getCoursesActive
+    events:
+      - http:
+          method: GET
+          path: /usersOnCourses/coursesActive
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  getCoursesCompleted:
+    handler: handlers/usersOnCourses/getUsersOnCourses.getCoursesCompleted
+    events:
+      - http:
+          method: GET
+          path: /usersOnCourses/coursesCompleted
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  getUserCoursesActive:
+    handler: handlers/usersOnCourses/getUsersOnCourses.getUserCoursesActive
+    events:
+      - http:
+          method: GET
+          path: /usersOnCourses/userCoursesActive
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  getUserCoursesCompleted:
+    handler: handlers/usersOnCourses/getUsersOnCourses.getUserCoursesCompleted
+    events:
+      - http:
+          method: GET
+          path: /usersOnCourses/userCoursesCompleted
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  createUserOnCourse:
+    handler: handlers/usersOnCourses/createUserOnCourse.handler
+    events:
+      - http:
+          method: POST
+          path: /usersOnCourses
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  updateUserOnCourse:
+    handler: handlers/usersOnCourses/updateUserOnCourse.handler
+    events:
+      - http:
+          method: POST
+          path: /usersOnCourses/update
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  deleteUserOnCourse:
+    handler: handlers/usersOnCourses/deleteUserOnCourse.handler
+    events:
+      - http:
+          method: GET
+          path: /usersOnCourses/delete
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  #ModulesOnCourse
+  getAllModulesOnCourse:
+    handler: handlers/modulesOnCourse/getModulesOnCourse.getAllModulesOnCourse
+    events:
+      - http:
+          method: GET
+          path: /modulesOnCourse
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  getModuleOnCourseById:
+    handler: handlers/modulesOnCourse/getModulesOnCourse.getModuleOnCourseById
+    events:
+      - http:
+          method: POST
+          path: /modulesOnCourse/getModuleOnCourseById
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  getModulesCompleted:
+    handler: handlers/modulesOnCourse/getModulesOnCourse.getModulesCompleted
+    events:
+      - http:
+          method: POST
+          path: /modulesOnCourse/modulesCompleted
+  createModuleOnCourse:
+    handler: handlers/modulesOnCourse/createModuleOnCourse.handler
+    events:
+      - http:
+          method: POST
+          path: /modulesOnCourse
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  updateModuleOnCouse:
+    handler: handlers/modulesOnCourse/updateModuleOnCourse.handler
+    events:
+      - http:
+          method: POST
+          path: /modulesOnCourse/update
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  getModulesAverageGrade:
+    handler: handlers/modulesOnCourse/getModulesOnCourse.getModulesAverageGrade
+    events:
+      - http:
+          method: POST
+          path: /modulesOnCourse/getModulesAverageGrade
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  #TestAnswers
+  getUserTestAnswers:
+    handler: handlers/testAnswers/userTestAnswers.getUserTestAnswers
+    events:
+      - http:
+          method: POST
+          path: /testAnswers/getUserTestAnswers
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  createUserTestAnswers:
+    handler: handlers/testAnswers/createUserTestAnswers.handler
+    events:
+      - http:
+          method: POST
+          path: /testAnswers/createUserTestAnswers
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  updateUserTestAnswers:
+    handler: handlers/testAnswers/updateUserTestAnswers.handler
+    events:
+      - http:
+          method: POST
+          path: /testAnswers/updateUserTestAnswers
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  getTestGrade:
+    handler: handlers/testAnswers/userTestAnswers.getTestGrade
+    events:
+      - http:
+          method: POST
+          path: /testAnswers/getTestGrade
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+  getTestReviewed:
+    handler: handlers/testAnswers/userTestAnswers.getTestReviewed
+    events: 
+      - http:
+          method: POST
+          path: /testAnswers/getTestReviewed
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+#rewards
+  getRewardsByUserAndTest:
+    handler: handlers/rewards/get-rewards.getRewardsByUserAndTest
+    events:
+      - http:
+          method: POST
+          path: /rewards/getRewardsByUserAndTest
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300 
+  geAllRewardsByUser:
+    handler: handlers/rewards/get-rewards.geAllRewardsByUser        
+    events:
+      - http:
+          method: POST
+          path: /rewards/geAllRewardsByUser
+          authorizer:
+            name: authorizer
+            type: request
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 300
+# only include the Prisma binary required on AWS Lambda while packaging
+package:
+  patterns:
+    - '!node_modules/.prisma/client/libquery_engine-*'
+    - 'node_modules/.prisma/client/libquery_engine-rhel-*'
+    - '!node_modules/prisma/libquery_engine-*'
+    - '!node_modules/@prisma/engines/**'
+
